@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>CHF &rarr; USD Conversion Calculator | Swisset Tool Company</title>
+<meta name="description" content="CHF to USD line-item conversion calculator for FX purchasing, with an hourly-updated exchange rate." />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+<div class="frame">
+
+  <header class="masthead">
+    <div class="masthead__id">
+      <span class="masthead__eyebrow">Swisset Tool Company &middot; FX Purchasing</span>
+      <h1 class="masthead__title">CHF&nbsp;&rarr;&nbsp;USD Conversion Calculator</h1>
+    </div>
+
+    <div class="readout" id="readout" aria-live="polite">
+      <div class="readout__label">USD / CHF SPOT</div>
+      <div class="readout__digits" id="readoutDigits">-.----</div>
+      <div class="readout__meta">
+        <span id="readoutUpdated">checking data feed&hellip;</span>
+        <button type="button" id="refreshBtn" class="readout__refresh" title="Reload the latest saved rate">&#8635;</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="banner" id="staleBanner" hidden>
+    The saved rate is more than a few hours old. The hourly GitHub Action may be paused &mdash; figures below use the last known rate.
+  </div>
+
+  <main>
+    <div class="toolbar">
+      <button type="button" id="addRowBtn" class="btn btn--primary">+ Add line item</button>
+      <button type="button" id="exportBtn" class="btn">Export CSV</button>
+      <button type="button" id="clearBtn" class="btn btn--ghost">Clear all</button>
+    </div>
+
+    <div class="table-wrap">
+      <table class="ledger" id="ledgerTable">
+        <thead>
+          <tr>
+            <th class="col-num">#</th>
+            <th class="col-text">Line item</th>
+            <th class="col-num editable">Qty received</th>
+            <th class="col-num editable">CHF value<span>per unit</span></th>
+            <th class="col-num computed">USD value<span>per unit</span></th>
+            <th class="col-num computed">CHF total<span>line value</span></th>
+            <th class="col-num computed">USD total<span>line value</span></th>
+            <th class="col-action"></th>
+          </tr>
+        </thead>
+        <tbody id="ledgerBody">
+          <!-- rows injected by js/app.js -->
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="5" class="totals-label">Total invoice value</td>
+            <td class="totals-value" id="totalCHF">CHF 0.00</td>
+            <td class="totals-value" id="totalUSD">$0.00</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p class="footnote">
+      Qty received and CHF value per unit are the only entered figures &mdash; every other column is calculated from the live rate above.
+      Line items are saved in this browser only. Rate data is pulled from Yahoo! Finance (ticker <code>CHF=X</code>) by a scheduled GitHub Action and committed to
+      <code>data/rate.json</code> once an hour.
+    </p>
+  </main>
+
+  <footer class="colophon">
+    <span>Swisset Tool Company</span>
+    <span class="dot">&middot;</span>
+    <span>Internal FX purchasing tool</span>
+    <span class="dot">&middot;</span>
+    <a href="https://github.com" id="repoLink">Source on GitHub</a>
+  </footer>
+
+</div>
+
+<template id="rowTemplate">
+  <tr>
+    <td class="col-num row-index"></td>
+    <td class="col-text"><input type="text" class="cell-input line-name" placeholder="Description (optional)" /></td>
+    <td class="col-num editable"><input type="number" class="cell-input cell-qty" min="0" step="1" inputmode="numeric" placeholder="0" /></td>
+    <td class="col-num editable"><input type="number" class="cell-input cell-chf" min="0" step="0.01" inputmode="decimal" placeholder="0.00" /></td>
+    <td class="col-num computed cell-usd-unit">&ndash;</td>
+    <td class="col-num computed cell-chf-total">&ndash;</td>
+    <td class="col-num computed cell-usd-total">&ndash;</td>
+    <td class="col-action"><button type="button" class="row-remove" title="Remove line item" aria-label="Remove line item">&times;</button></td>
+  </tr>
+</template>
+
+<script src="js/app.js"></script>
+</body>
+</html>
